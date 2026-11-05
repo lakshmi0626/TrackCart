@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: trackcart-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: trackcart_db
+      POSTGRES_USER: trackcart_user
+      POSTGRES_PASSWORD: trackcart_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U trackcart_user -d trackcart_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - trackcart-net
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: trackcart-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: trackcart_db
+      DB_USER: trackcart_user
+      DB_PASSWORD: trackcart_password
+      JWT_SECRET: c7b203c6a46e1098651a3db518e3981fe1b6062f8cb519a79fa45759efc78bda
+      JWT_EXPIRATION_MS: 86400000
+      SERVER_PORT: 8080
+    ports:
+      - "8080:8080"
+    networks:
+      - trackcart-net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: trackcart-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+    networks:
+      - trackcart-net
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  trackcart-net:
+    driver: bridge
