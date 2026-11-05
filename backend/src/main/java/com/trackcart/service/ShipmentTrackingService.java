@@ -23,6 +23,7 @@ public class ShipmentTrackingService {
     private final NotificationRepository notificationRepository;
     private final AuditLogRepository auditLogRepository;
     private final AuthService authService;
+    private final EmailService emailService;
 
     public ShipmentTrackingService(ShipmentRepository shipmentRepository,
                                    OrderRepository orderRepository,
@@ -30,7 +31,7 @@ public class ShipmentTrackingService {
                                    TrackingEventRepository trackingEventRepository,
                                    NotificationRepository notificationRepository,
                                    AuditLogRepository auditLogRepository,
-                                   AuthService authService) {
+                                   AuthService authService, EmailService emailService) {
         this.shipmentRepository = shipmentRepository;
         this.orderRepository = orderRepository;
         this.deliveryPartnerRepository = deliveryPartnerRepository;
@@ -38,6 +39,7 @@ public class ShipmentTrackingService {
         this.notificationRepository = notificationRepository;
         this.auditLogRepository = auditLogRepository;
         this.authService = authService;
+        this.emailService = emailService;
     }
 
     public ShipmentResponse trackByTrackingNumber(String trackingNumber) {
@@ -154,7 +156,13 @@ public class ShipmentTrackingService {
                 currentUser.getEmail(),
                 "Updated status to " + newStatus.name() + " at " + loc
         );
-        auditLogRepository.save(audit);
+                auditLogRepository.save(audit);
+
+        if (newStatus == ShipmentStatus.SHIPPED) {
+            emailService.sendShipmentDispatchedEmail(saved);
+        } else if (newStatus == ShipmentStatus.DELIVERED) {
+            emailService.sendDeliveryCompletedEmail(saved);
+        }
 
         return ShipmentResponse.fromShipment(saved);
     }
