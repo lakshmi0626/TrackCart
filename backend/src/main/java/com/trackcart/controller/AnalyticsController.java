@@ -6,6 +6,7 @@ import com.trackcart.model.AuditLog;
 import com.trackcart.service.AnalyticsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,5 +44,15 @@ public class AnalyticsController {
     @Operation(summary = "Get recent immutable audit trail logs for enterprise compliance")
     public ResponseEntity<List<AuditLog>> getAuditLogs() {
         return ResponseEntity.ok(analyticsService.getAuditLogs());
+    }
+
+    @GetMapping(value = "/export/orders/csv", produces = "text/csv")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Export all orders report in CSV format")
+    public ResponseEntity<String> exportOrdersCsv() {
+        String csv = analyticsService.generateOrdersCsv();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"trackcart-orders.csv\"")
+                .body(csv);
     }
 }

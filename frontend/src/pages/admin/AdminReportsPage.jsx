@@ -34,6 +34,26 @@ export default function AdminReportsPage() {
     window.print();
   };
 
+  const handleExportCsv = async () => {
+    try {
+      const token = localStorage.getItem('trackcart_token');
+      const response = await fetch('/api/analytics/export/orders/csv', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `trackcart-orders-${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Failed to export CSV', err);
+    }
+  };
+
   if (loading || !summary) {
     return <div className="py-20 text-center text-xs text-slate-400">Loading performance report...</div>;
   }
@@ -59,13 +79,22 @@ export default function AdminReportsPage() {
           </p>
         </div>
 
-        <button
-          onClick={handlePrint}
-          className="px-4 py-2 bg-slate-900 hover:bg-emerald-600 text-white font-semibold text-xs rounded-lg transition-colors flex items-center gap-2 self-start shadow-xs"
-        >
-          <Printer className="w-4 h-4 text-emerald-400" />
-          Print / Export Report
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleExportCsv}
+            className="px-3.5 py-2 border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs rounded-lg transition-colors flex items-center gap-1.5 shadow-xs"
+          >
+            <Download className="w-4 h-4 text-slate-500" />
+            Export Orders CSV
+          </button>
+          <button
+            onClick={handlePrint}
+            className="px-4 py-2 bg-slate-900 hover:bg-emerald-600 text-white font-semibold text-xs rounded-lg transition-colors flex items-center gap-2 shadow-xs"
+          >
+            <Printer className="w-4 h-4 text-emerald-400" />
+            Print / Export Report
+          </button>
+        </div>
       </div>
 
       {/* Operational Highlights */}
@@ -85,7 +114,7 @@ export default function AdminReportsPage() {
           <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Delay Incident Ratio</p>
           <div className="flex items-baseline gap-2 mt-2">
             <span className="text-3xl font-extrabold text-amber-600">{delayRate}%</span>
-            <span className="text-xs text-slate-400">affected by road/weather</span>
+            <span className="text-xs text-slate-400">breached SLA windows</span>
           </div>
           <div className="w-full bg-slate-100 h-2 rounded-full mt-3 overflow-hidden">
             <div className="bg-amber-500 h-full rounded-full" style={{ width: `${delayRate}%` }}></div>
@@ -93,59 +122,57 @@ export default function AdminReportsPage() {
         </div>
 
         <div className="card-subtle p-5 bg-white">
-          <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Average Turnaround</p>
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Net Fleet Fulfillment</p>
           <div className="flex items-baseline gap-2 mt-2">
-            <span className="text-3xl font-extrabold text-slate-900">22.4 hrs</span>
-            <span className="text-xs text-slate-400">order to door</span>
+            <span className="text-3xl font-extrabold text-slate-900">{summary.deliveredOrders}</span>
+            <span className="text-xs text-slate-400">packages successfully delivered</span>
           </div>
-          <p className="text-xs text-emerald-600 font-semibold mt-3">Within 24hr SLA standard</p>
+          <p className="text-xs text-slate-500 mt-2">
+            Across {summary.totalDeliveryPartners} active logistics partners.
+          </p>
         </div>
       </div>
 
-      {/* Structured Ledger Table */}
-      <div className="card-subtle bg-white p-6 space-y-4">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Operations Balance Sheet</h3>
-        <table className="w-full text-left text-xs">
-          <thead className="bg-slate-50 border-b border-slate-200">
-            <tr>
-              <th className="py-2.5 px-3">Metric Category</th>
-              <th className="py-2.5 px-3">Measured Count</th>
-              <th className="py-2.5 px-3">Logistical Status</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            <tr>
-              <td className="py-3 px-3 font-semibold text-slate-800">Gross Sales Revenue</td>
-              <td className="py-3 px-3 font-mono font-bold text-slate-900">${Number(summary.totalRevenue || 0).toFixed(2)}</td>
-              <td className="py-3 px-3 text-emerald-600 font-semibold">100% Reconciled</td>
-            </tr>
-            <tr>
-              <td className="py-3 px-3 font-semibold text-slate-800">Total Registered Orders</td>
-              <td className="py-3 px-3 font-mono font-bold text-slate-900">{summary.totalOrders}</td>
-              <td className="py-3 px-3 text-slate-600">Active Database Records</td>
-            </tr>
-            <tr>
-              <td className="py-3 px-3 font-semibold text-slate-800">Fulfilled Deliveries</td>
-              <td className="py-3 px-3 font-mono font-bold text-emerald-600">{summary.deliveredOrders}</td>
-              <td className="py-3 px-3 text-emerald-600 font-semibold">Signed & Confirmed</td>
-            </tr>
-            <tr>
-              <td className="py-3 px-3 font-semibold text-slate-800">Pending In-Transit Pipeline</td>
-              <td className="py-3 px-3 font-mono font-bold text-amber-600">{summary.pendingDeliveries}</td>
-              <td className="py-3 px-3 text-amber-600 font-semibold">Assigned & Moving</td>
-            </tr>
-            <tr>
-              <td className="py-3 px-3 font-semibold text-slate-800">Delayed Shipments</td>
-              <td className="py-3 px-3 font-mono font-bold text-rose-600">{summary.delayedOrders}</td>
-              <td className="py-3 px-3 text-rose-600 font-semibold">Under Expedited Triage</td>
-            </tr>
-            <tr>
-              <td className="py-3 px-3 font-semibold text-slate-800">Active Fleet Couriers</td>
-              <td className="py-3 px-3 font-mono font-bold text-slate-900">{summary.totalDeliveryPartners}</td>
-              <td className="py-3 px-3 text-slate-600">EV Cargo & Hybrid Cruisers</td>
-            </tr>
-          </tbody>
-        </table>
+      {/* Financial & Status Breakdown */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="card-subtle p-6 bg-white space-y-4">
+          <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+            Lifecycle Distribution
+          </h2>
+          <div className="space-y-3">
+            {summary.orderStatusDistribution && Object.entries(summary.orderStatusDistribution).map(([st, cnt]) => (
+              <div key={st} className="flex items-center justify-between text-xs py-2 border-b border-slate-100 last:border-0">
+                <span className="font-medium text-slate-600">{st.replace('_', ' ')}</span>
+                <span className="font-bold text-slate-900 bg-slate-100 px-2.5 py-0.5 rounded-full">{cnt}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="card-subtle p-6 bg-white space-y-4">
+          <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+            Revenue & Partner Analytics
+          </h2>
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+            <div>
+              <p className="text-xs text-slate-500 font-medium">Gross Platform Merchandise Value</p>
+              <p className="text-2xl font-extrabold text-slate-900 mt-1">${Number(summary.totalRevenue || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+            </div>
+            <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+              <DollarSign className="w-6 h-6" />
+            </div>
+          </div>
+
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+            <div>
+              <p className="text-xs text-slate-500 font-medium">Active Customer Accounts</p>
+              <p className="text-2xl font-extrabold text-slate-900 mt-1">{summary.totalCustomers}</p>
+            </div>
+            <div className="w-12 h-12 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
+              <CheckCircle2 className="w-6 h-6" />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
