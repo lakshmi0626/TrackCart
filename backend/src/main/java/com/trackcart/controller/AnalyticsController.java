@@ -55,4 +55,13 @@ public class AnalyticsController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"trackcart-orders.csv\"")
                 .body(csv);
     }
+    @GetMapping(value = "/export/audit-logs/csv", produces = "text/csv")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Export immutable compliance audit logs in CSV format")
+    public ResponseEntity<String> exportAuditLogsCsv() {
+        String csv = analyticsService.generateAuditLogsCsv();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"trackcart-audit-logs.csv\"")
+                .body(csv);
+    }
 }

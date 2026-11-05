@@ -137,4 +137,21 @@ public class AnalyticsService {
         }
         return csv.toString();
     }
+    public String generateAuditLogsCsv() {
+        StringBuilder csv = new StringBuilder();
+        csv.append("ID,Action,Entity,Entity ID,Performed By,Timestamp,Details\n");
+        List<AuditLog> logs = auditLogRepository.findTop50ByOrderByTimestampDesc();
+        for (AuditLog l : logs) {
+            csv.append(String.format("%d,\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n",
+                    l.getId(),
+                    l.getAction(),
+                    l.getEntityName(),
+                    l.getEntityId(),
+                    l.getPerformedBy(),
+                    l.getTimestamp().toString(),
+                    (l.getDetails() != null ? l.getDetails().replace("\"", "\"\"") : "")
+            ));
+        }
+        return csv.toString();
+    }
 }
