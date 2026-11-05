@@ -1,11 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../../services/api';
-import { ShieldAlert, Search, Clock, FileText } from 'lucide-react';
+import { ShieldAlert, Search, Clock, FileText, Download } from 'lucide-react';
 
 export default function AdminAuditLogsPage() {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const handleExportCsv = async () => {
+    try {
+      const token = localStorage.getItem('trackcart_token');
+      const response = await fetch('/api/analytics/export/audit-logs/csv', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `trackcart-audit-logs-${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Failed to export audit logs', err);
+    }
+  };
 
   useEffect(() => {
     loadLogs();
