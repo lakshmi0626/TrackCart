@@ -19,6 +19,7 @@ export default function CustomerOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('ALL');
   const [search, setSearch] = useState('');
+  const [sortBy, setSortBy] = useState('NEWEST');
   const [expandedId, setExpandedId] = useState(null);
   const [cancellingId, setCancellingId] = useState(null);
 
