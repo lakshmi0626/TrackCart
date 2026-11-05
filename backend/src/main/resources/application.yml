@@ -8,6 +8,9 @@ spring:
     name: trackcart-backend
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
+  sql:
+    init:
+      mode: never
   jpa:
     open-in-view: false
     hibernate:
@@ -45,9 +48,5 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password: 
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
