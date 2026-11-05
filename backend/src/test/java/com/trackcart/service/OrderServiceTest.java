@@ -44,6 +44,7 @@ class OrderServiceTest {
         orderService = new OrderService(
                 orderRepository,
                 customerRepository,
+                deliveryPartnerRepository,
                 shipmentRepository,
                 trackingEventRepository,
                 paymentRepository,
