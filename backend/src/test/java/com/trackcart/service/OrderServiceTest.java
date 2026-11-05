@@ -32,6 +32,7 @@ class OrderServiceTest {
     @Mock private NotificationRepository notificationRepository;
     @Mock private AuditLogRepository auditLogRepository;
     @Mock private AuthService authService;
+    @Mock private EmailService emailService;
 
     private OrderService orderService;
     private User testUser;
@@ -48,7 +49,8 @@ class OrderServiceTest {
                 invoiceRepository,
                 notificationRepository,
                 auditLogRepository,
-                authService
+                authService,
+                emailService
         );
 
         testUser = new User("customer@example.com", "pass", "Customer User", "+123", Role.CUSTOMER);
