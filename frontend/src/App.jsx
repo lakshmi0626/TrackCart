@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ToastProvider } from './context/ToastContext';
 import AppLayout from './components/layout/AppLayout';
 
 // Auth Pages
@@ -54,42 +55,44 @@ function ProtectedRoute({ children, allowedRoles }) {
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+      <ToastProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
 
-          <Route element={<AppLayout />}>
-            <Route path="/" element={<RootRedirect />} />
-            <Route path="/track" element={<TrackingPage />} />
-            <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+            <Route element={<AppLayout />}>
+              <Route path="/" element={<RootRedirect />} />
+              <Route path="/track" element={<TrackingPage />} />
+              <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
 
-            {/* Customer Routes */}
-            <Route path="/customer" element={<ProtectedRoute allowedRoles={['CUSTOMER']}><CustomerDashboard /></ProtectedRoute>} />
-            <Route path="/customer/create-order" element={<ProtectedRoute allowedRoles={['CUSTOMER']}><CreateOrderPage /></ProtectedRoute>} />
-            <Route path="/customer/orders" element={<ProtectedRoute allowedRoles={['CUSTOMER']}><CustomerOrdersPage /></ProtectedRoute>} />
-            <Route path="/customer/complaints" element={<ProtectedRoute allowedRoles={['CUSTOMER']}><CustomerComplaintsPage /></ProtectedRoute>} />
+              {/* Customer Routes */}
+              <Route path="/customer" element={<ProtectedRoute allowedRoles={['CUSTOMER']}><CustomerDashboard /></ProtectedRoute>} />
+              <Route path="/customer/create-order" element={<ProtectedRoute allowedRoles={['CUSTOMER']}><CreateOrderPage /></ProtectedRoute>} />
+              <Route path="/customer/orders" element={<ProtectedRoute allowedRoles={['CUSTOMER']}><CustomerOrdersPage /></ProtectedRoute>} />
+              <Route path="/customer/complaints" element={<ProtectedRoute allowedRoles={['CUSTOMER']}><CustomerComplaintsPage /></ProtectedRoute>} />
 
-            {/* Admin Routes */}
-            <Route path="/admin" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminDashboard /></ProtectedRoute>} />
-            <Route path="/admin/orders" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminOrdersPage /></ProtectedRoute>} />
-            <Route path="/admin/shipments" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminShipmentsPage /></ProtectedRoute>} />
-            <Route path="/admin/customers" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminCustomersPage /></ProtectedRoute>} />
-            <Route path="/admin/partners" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminPartnersPage /></ProtectedRoute>} />
-            <Route path="/admin/complaints" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminComplaintsPage /></ProtectedRoute>} />
-            <Route path="/admin/reports" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminReportsPage /></ProtectedRoute>} />
-            <Route path="/admin/audit-logs" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminAuditLogsPage /></ProtectedRoute>} />
+              {/* Admin Routes */}
+              <Route path="/admin" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminDashboard /></ProtectedRoute>} />
+              <Route path="/admin/orders" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminOrdersPage /></ProtectedRoute>} />
+              <Route path="/admin/shipments" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminShipmentsPage /></ProtectedRoute>} />
+              <Route path="/admin/customers" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminCustomersPage /></ProtectedRoute>} />
+              <Route path="/admin/partners" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminPartnersPage /></ProtectedRoute>} />
+              <Route path="/admin/complaints" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminComplaintsPage /></ProtectedRoute>} />
+              <Route path="/admin/reports" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminReportsPage /></ProtectedRoute>} />
+              <Route path="/admin/audit-logs" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminAuditLogsPage /></ProtectedRoute>} />
 
-            {/* Delivery Partner Routes */}
-            <Route path="/partner" element={<ProtectedRoute allowedRoles={['DELIVERY_PARTNER']}><PartnerDashboard /></ProtectedRoute>} />
-            <Route path="/partner/deliveries" element={<ProtectedRoute allowedRoles={['DELIVERY_PARTNER']}><PartnerDeliveriesPage /></ProtectedRoute>} />
-            <Route path="/partner/history" element={<ProtectedRoute allowedRoles={['DELIVERY_PARTNER']}><PartnerHistoryPage /></ProtectedRoute>} />
+              {/* Delivery Partner Routes */}
+              <Route path="/partner" element={<ProtectedRoute allowedRoles={['DELIVERY_PARTNER']}><PartnerDashboard /></ProtectedRoute>} />
+              <Route path="/partner/deliveries" element={<ProtectedRoute allowedRoles={['DELIVERY_PARTNER']}><PartnerDeliveriesPage /></ProtectedRoute>} />
+              <Route path="/partner/history" element={<ProtectedRoute allowedRoles={['DELIVERY_PARTNER']}><PartnerHistoryPage /></ProtectedRoute>} />
 
-            {/* Fallback */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+              {/* Fallback */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </ToastProvider>
     </AuthProvider>
   );
 }
