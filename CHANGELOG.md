@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.0] - 2026-11-05
+
+### Added (30 Enterprise Pull Requests Completed)
+- **PR #14**: Health Check and Actuator Diagnostics (`/api/health`) monitoring JVM memory, disk space, and database connection.
+- **PR #15**: IP-based request rate limiting filter (`RateLimitFilter`) mitigating brute-force and DDoS risks (120 req/min).
+- **PR #16**: Order reporting CSV stream export (`/api/analytics/export/orders/csv`) and Admin portal download trigger.
+- **PR #17**: Asynchronous transactional email dispatch service (`EmailService`) for order and delivery lifecycle alerts.
+- **PR #18**: Promotional coupon engine with `Coupon` entity, validation API (`/api/coupons/validate`), and checkout discount calculations (`WELCOME10`, `TRACK20`).
+- **PR #19**: Dynamic multi-criteria order sorting and full-text search across Admin and Customer order tables.
+- **PR #20**: Haversine geodesic distance and transit ETA telemetry utility (`GeoUtils`) with live courier proximity indicators.
+- **PR #21**: External SMS webhook notification dispatcher (`SmsWebhookService`) for Twilio/gateway carrier integrations.
+- **PR #22**: Profile identity customizer with multi-tone avatar palette selector and persistent state.
+- **PR #23**: Delivery partner rating and performance evaluation endpoint (`POST /api/orders/{id}/rate`) with cumulative score re-computation.
+- **PR #24**: Cryptographic digital verification stamp with SHA-256 doc authentication hashes embedded in tax invoices.
+- **PR #25**: Standardized RFC 7807 problem details error handling (`GlobalExceptionHandler`) with UUID trace IDs and validation maps.
+- **PR #26**: Global reactive floating Toast notification system (`ToastContext`) replacing native browser popups.
+- **PR #27**: Immutable compliance audit trail CSV export (`/api/analytics/export/audit-logs/csv`).
+- **PR #28**: Real-time visual password strength and complexity meter in user registration.
+- **PR #29**: Automated integration test suite (`CouponServiceTest`) expanding automated test coverage to 12 passing tests.
+- **PR #30**: Production readiness documentation polish and OpenAPI specifications.
+
+---
+
 ## [1.0.0] - 2026-11-05
 
 ### Added

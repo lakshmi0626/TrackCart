@@ -204,3 +204,23 @@ Returns last 50 immutable system events with actors and timestamps.
 
 ### `POST /api/seed/reset`
 Restores the database with clean demonstration data across all three roles.
+
+
+---
+
+## 7. Diagnostics, Coupons & Data Exports (v1.1.0)
+
+### `GET /api/health`
+Public liveness and diagnostics probe returning JVM memory, disk space, and database connection status.
+
+### `POST /api/coupons/validate`
+Validates promotional discount codes (`WELCOME10`, `TRACK20`) against current cart subtotal.
+
+### `POST /api/orders/{id}/rate` *(Customer Only)*
+Submits courier feedback (1-5 stars) and dynamically recalculates delivery partner moving average rating.
+
+### `GET /api/analytics/export/orders/csv` *(Admin Only)*
+Streams all platform order records as a formatted CSV attachment.
+
+### `GET /api/analytics/export/audit-logs/csv` *(Admin Only)*
+Streams immutable compliance audit event logs as a formatted CSV attachment.
