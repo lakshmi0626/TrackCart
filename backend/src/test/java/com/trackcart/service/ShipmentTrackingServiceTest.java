@@ -28,6 +28,7 @@ class ShipmentTrackingServiceTest {
     @Mock private NotificationRepository notificationRepository;
     @Mock private AuditLogRepository auditLogRepository;
     @Mock private AuthService authService;
+    @Mock private EmailService emailService;
 
     private ShipmentTrackingService trackingService;
 
@@ -40,7 +41,8 @@ class ShipmentTrackingServiceTest {
                 trackingEventRepository,
                 notificationRepository,
                 auditLogRepository,
-                authService
+                authService,
+                emailService
         );
     }
 
