@@ -68,8 +68,9 @@ public class AnalyticsService {
                     return OrderResponse.fromOrder(
                             o,
                             s != null ? s.getTrackingNumber() : null,
-                            s != null ? s.getStatus().name() : null,
-                            s != null && Boolean.TRUE.equals(s.getIsDelayed())
+                            s != null && s.getStatus() != null ? s.getStatus().name() : null,
+                            null,
+                            null
                     );
                 })
                 .collect(Collectors.toList());
@@ -82,14 +83,14 @@ public class AnalyticsService {
         res.setDeliveredOrders(deliveredOrders);
         res.setDelayedOrders(delayedOrders);
         res.setOpenComplaints(openComplaints);
-        res.setOrderStatusDistribution(dist);
+        res.setStatusDistribution(dist);
         res.setRecentOrders(recentOrders);
 
         return res;
     }
 
     public PartnerAnalyticsResponse getPartnerSummary() {
-        User user = authService.getCurrentAuthenticatedUser();
+        User user = authService.getCurrentUser();
         DeliveryPartner partner = deliveryPartnerRepository.findByUser(user)
                 .orElse(null);
 

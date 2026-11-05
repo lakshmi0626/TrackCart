@@ -31,6 +31,7 @@ public class OrderService {
     private final NotificationRepository notificationRepository;
     private final AuditLogRepository auditLogRepository;
     private final AuthService authService;
+    private final EmailService emailService;
 
     public OrderService(OrderRepository orderRepository,
                         CustomerRepository customerRepository,
@@ -40,7 +41,7 @@ public class OrderService {
                         InvoiceRepository invoiceRepository,
                         NotificationRepository notificationRepository,
                         AuditLogRepository auditLogRepository,
-                        AuthService authService) {
+                        AuthService authService, EmailService emailService) {
         this.orderRepository = orderRepository;
         this.customerRepository = customerRepository;
         this.shipmentRepository = shipmentRepository;
@@ -50,6 +51,7 @@ public class OrderService {
         this.notificationRepository = notificationRepository;
         this.auditLogRepository = auditLogRepository;
         this.authService = authService;
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -181,6 +183,7 @@ public class OrderService {
                 "Created order " + savedOrder.getOrderNumber() + " with total $" + finalAmount
         );
         auditLogRepository.save(audit);
+        emailService.sendOrderConfirmationEmail(savedOrder);
 
         return OrderResponse.fromOrder(savedOrder, trackingNum, savedShipment.getStatus().name(), null, null);
     }
@@ -286,6 +289,7 @@ public class OrderService {
                 "Cancelled order " + order.getOrderNumber()
         );
         auditLogRepository.save(audit);
+        emailService.sendOrderConfirmationEmail(updated);
 
         return OrderResponse.fromOrder(updated, shipment != null ? shipment.getTrackingNumber() : null, "CANCELLED", null, null);
     }
