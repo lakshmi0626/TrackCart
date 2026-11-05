@@ -55,6 +55,7 @@ public class SecurityConfig {
                     "/api/auth/**",
                     "/api/shipments/track/**",
                     "/api/health/**",
+                    "/api/coupons/**",
                     "/api/seed/**",
                     "/h2-console/**",
                     "/swagger-ui/**",

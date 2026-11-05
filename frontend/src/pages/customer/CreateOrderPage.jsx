@@ -74,7 +74,7 @@ export default function CreateOrderPage() {
   const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const shippingFee = subtotal >= 100 ? 0 : 12;
   const tax = subtotal * 0.18;
-  const grandTotal = subtotal + shippingFee + tax;
+  const grandTotal = Math.max(0, subtotal - discount + shippingFee + tax);
 
   const handleCheckout = async (e) => {
     e.preventDefault();
@@ -301,6 +301,32 @@ export default function CreateOrderPage() {
                 <option value="NET_BANKING">Net Banking Wire</option>
                 <option value="COD">Cash On Delivery</option>
               </select>
+            </div>
+
+                        {/* Promo Code Input */}
+            <div className="pt-2">
+              <label className="block text-xs font-semibold text-slate-700 mb-1">Promo Coupon Code</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="e.g. WELCOME10, TRACK20"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                  className="flex-1 px-3 py-1.5 text-xs uppercase font-mono tracking-wider border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                />
+                <button
+                  type="button"
+                  onClick={handleApplyCoupon}
+                  className="px-3 py-1.5 text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg transition-colors"
+                >
+                  Apply
+                </button>
+              </div>
+              {couponMessage && (
+                <p className={`text-[11px] mt-1 font-medium ${discount > 0 ? 'text-emerald-600' : 'text-amber-600'}`}>
+                  {couponMessage}
+                </p>
+              )}
             </div>
 
             {/* Price Breakdown */}
