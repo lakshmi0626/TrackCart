@@ -25,6 +25,7 @@ class OrderServiceTest {
 
     @Mock private OrderRepository orderRepository;
     @Mock private CustomerRepository customerRepository;
+    @Mock private DeliveryPartnerRepository deliveryPartnerRepository;
     @Mock private ShipmentRepository shipmentRepository;
     @Mock private TrackingEventRepository trackingEventRepository;
     @Mock private PaymentRepository paymentRepository;
