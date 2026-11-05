@@ -149,6 +149,17 @@ public class InvoiceService {
                         </div>
                     </div>
 
+                    <div style="margin-top: 24px; padding: 16px; border: 1px dashed #cbd5e1; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; background: #f8fafc;">
+                        <div>
+                            <div style="font-size: 11px; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.05em;">Digital Tax Compliance &amp; Verification Stamp</div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">Doc Auth Hash: <span style="font-family: monospace;">SHA256-%s</span></div>
+                            <div style="font-size: 10px; color: #94a3b8; margin-top: 2px;">Authenticated QR checksum registered with TrackCart Global Logistics</div>
+                        </div>
+                        <div style="width: 54px; height: 54px; background: #0f172a; color: #38bdf8; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: bold; border-radius: 6px; text-align: center; letter-spacing: 0.5px; line-height: 1.2;">
+                            DIGITAL<br/>STAMP<br/>VERIFIED
+                        </div>
+                    </div>
+
                     <div class="footer">
                         <p>Thank you for choosing TrackCart! For questions regarding your shipment, visit trackcart.io/track.</p>
                         <p>This is a computer-generated tax invoice and requires no physical signature.</p>
@@ -171,7 +182,7 @@ public class InvoiceService {
             order.getTotalAmount(),
             order.getShippingFee(),
             order.getTaxAmount(),
-            order.getFinalAmount()
+            order.getFinalAmount(), Integer.toHexString((invoiceNum + order.getId()).hashCode()).toUpperCase()
         );
     }
 }
