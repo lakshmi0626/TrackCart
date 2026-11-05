@@ -24,6 +24,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final CustomerRepository customerRepository;
+    private final DeliveryPartnerRepository deliveryPartnerRepository;
     private final ShipmentRepository shipmentRepository;
     private final TrackingEventRepository trackingEventRepository;
     private final PaymentRepository paymentRepository;
@@ -31,18 +32,20 @@ public class OrderService {
     private final NotificationRepository notificationRepository;
     private final AuditLogRepository auditLogRepository;
     private final AuthService authService;
+    private final EmailService emailService;
 
     public OrderService(OrderRepository orderRepository,
-                        CustomerRepository customerRepository,
+                        CustomerRepository customerRepository, DeliveryPartnerRepository deliveryPartnerRepository,
                         ShipmentRepository shipmentRepository,
                         TrackingEventRepository trackingEventRepository,
                         PaymentRepository paymentRepository,
                         InvoiceRepository invoiceRepository,
                         NotificationRepository notificationRepository,
                         AuditLogRepository auditLogRepository,
-                        AuthService authService) {
+                        AuthService authService, EmailService emailService) {
         this.orderRepository = orderRepository;
         this.customerRepository = customerRepository;
+        this.deliveryPartnerRepository = deliveryPartnerRepository;
         this.shipmentRepository = shipmentRepository;
         this.trackingEventRepository = trackingEventRepository;
         this.paymentRepository = paymentRepository;
@@ -50,6 +53,7 @@ public class OrderService {
         this.notificationRepository = notificationRepository;
         this.auditLogRepository = auditLogRepository;
         this.authService = authService;
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -181,6 +185,7 @@ public class OrderService {
                 "Created order " + savedOrder.getOrderNumber() + " with total $" + finalAmount
         );
         auditLogRepository.save(audit);
+        emailService.sendOrderConfirmationEmail(savedOrder);
 
         return OrderResponse.fromOrder(savedOrder, trackingNum, savedShipment.getStatus().name(), null, null);
     }
@@ -286,7 +291,24 @@ public class OrderService {
                 "Cancelled order " + order.getOrderNumber()
         );
         auditLogRepository.save(audit);
+        emailService.sendOrderConfirmationEmail(updated);
 
         return OrderResponse.fromOrder(updated, shipment != null ? shipment.getTrackingNumber() : null, "CANCELLED", null, null);
+    }
+    @Transactional
+    public Double rateDeliveryPartner(Long orderId, int stars) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
+        Shipment shipment = shipmentRepository.findByOrder(order).orElse(null);
+        if (shipment != null && shipment.getDeliveryPartner() != null) {
+            DeliveryPartner dp = shipment.getDeliveryPartner();
+            double currentRating = dp.getRating() != null ? dp.getRating() : 5.0;
+            int count = dp.getCompletedDeliveries() != null ? dp.getCompletedDeliveries() : 1;
+            double newRating = ((currentRating * count) + stars) / (count + 1);
+            dp.setRating(Math.round(newRating * 10.0) / 10.0);
+            deliveryPartnerRepository.save(dp);
+            return dp.getRating();
+        }
+        return 5.0;
     }
 }

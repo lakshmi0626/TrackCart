@@ -68,9 +68,9 @@ public class AnalyticsService {
                     return OrderResponse.fromOrder(
                             o,
                             s != null ? s.getTrackingNumber() : null,
-                            s != null ? s.getStatus().name() : o.getStatus().name(),
-                            s != null && s.getDeliveryPartner() != null && s.getDeliveryPartner().getUser() != null ? s.getDeliveryPartner().getUser().getFullName() : null,
-                            s != null && s.getDeliveryPartner() != null && s.getDeliveryPartner().getUser() != null ? s.getDeliveryPartner().getUser().getPhone() : null
+                            s != null && s.getStatus() != null ? s.getStatus().name() : null,
+                            null,
+                            null
                     );
                 })
                 .collect(Collectors.toList());
@@ -91,10 +91,11 @@ public class AnalyticsService {
 
     public PartnerAnalyticsResponse getPartnerSummary() {
         User user = authService.getCurrentUser();
-        DeliveryPartner partner = deliveryPartnerRepository.findByUser(user).orElse(null);
+        DeliveryPartner partner = deliveryPartnerRepository.findByUser(user)
+                .orElse(null);
 
         if (partner == null) {
-            return new PartnerAnalyticsResponse(0, 0, 5.0, BigDecimal.ZERO, true);
+            return new PartnerAnalyticsResponse(0L, 0L, 5.0, BigDecimal.ZERO, true);
         }
 
         List<Shipment> assignments = shipmentRepository.findByDeliveryPartnerOrderByEstimatedDeliveryDateAsc(partner);
@@ -116,5 +117,41 @@ public class AnalyticsService {
 
     public List<AuditLog> getAuditLogs() {
         return auditLogRepository.findTop50ByOrderByTimestampDesc();
+    }
+
+    public String generateOrdersCsv() {
+        StringBuilder csv = new StringBuilder();
+        csv.append("Order Number,Customer Name,Date,Status,Total Amount,Payment Status,Items Count\n");
+        List<Order> orders = orderRepository.findAll();
+        for (Order o : orders) {
+            String customerName = o.getCustomer() != null && o.getCustomer().getUser() != null ? o.getCustomer().getUser().getFullName() : "N/A";
+            csv.append(String.format("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",%d\n",
+                    o.getOrderNumber(),
+                    customerName.replace("\"", "\"\""),
+                    o.getCreatedAt() != null ? o.getCreatedAt().toString() : "",
+                    o.getStatus() != null ? o.getStatus().name() : "",
+                    o.getTotalAmount() != null ? o.getTotalAmount().toString() : "0.00",
+                    o.getPaymentStatus() != null ? o.getPaymentStatus().name() : "",
+                    o.getItems() != null ? o.getItems().size() : 0
+            ));
+        }
+        return csv.toString();
+    }
+    public String generateAuditLogsCsv() {
+        StringBuilder csv = new StringBuilder();
+        csv.append("ID,Action,Entity,Entity ID,Performed By,Timestamp,Details\n");
+        List<AuditLog> logs = auditLogRepository.findTop50ByOrderByTimestampDesc();
+        for (AuditLog l : logs) {
+            csv.append(String.format("%d,\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n",
+                    l.getId(),
+                    l.getAction(),
+                    l.getEntityName(),
+                    l.getEntityId(),
+                    l.getPerformedBy(),
+                    l.getTimestamp().toString(),
+                    (l.getDetails() != null ? l.getDetails().replace("\"", "\"\"") : "")
+            ));
+        }
+        return csv.toString();
     }
 }

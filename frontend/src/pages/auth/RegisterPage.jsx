@@ -143,6 +143,18 @@ export default function RegisterPage() {
                   className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500"
                 />
               </div>
+                {password && (
+                  <div className="mt-1.5 space-y-1">
+                    <div className="flex gap-1 h-1">
+                      <div className={`flex-1 rounded-full ${password.length >= 6 ? (password.length >= 10 ? 'bg-emerald-500' : 'bg-amber-500') : 'bg-rose-400'}`}></div>
+                      <div className={`flex-1 rounded-full ${password.length >= 8 && /[0-9]/.test(password) ? (password.length >= 10 ? 'bg-emerald-500' : 'bg-amber-500') : 'bg-slate-200'}`}></div>
+                      <div className={`flex-1 rounded-full ${password.length >= 10 && /[A-Z]/.test(password) && /[^A-Za-z0-9]/.test(password) ? 'bg-emerald-500' : 'bg-slate-200'}`}></div>
+                    </div>
+                    <span className="text-[10px] text-slate-500 font-medium block">
+                      {password.length < 6 ? 'Too short (min 6)' : (password.length >= 10 && /[A-Z]/.test(password) && /[^A-Za-z0-9]/.test(password) ? 'Strong security' : 'Moderate security')}
+                    </span>
+                  </div>
+                )}
             </div>
 
             {role === 'CUSTOMER' ? (
