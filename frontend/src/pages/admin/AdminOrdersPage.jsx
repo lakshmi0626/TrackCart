@@ -17,6 +17,7 @@ export default function AdminOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('ALL');
   const [search, setSearch] = useState('');
+  const [sortBy, setSortBy] = useState('NEWEST');
 
   // Assign modal
   const [selectedOrder, setSelectedOrder] = useState(null);
