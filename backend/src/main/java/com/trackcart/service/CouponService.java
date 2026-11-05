@@ -24,17 +24,19 @@ public class CouponService {
 
         String normalized = code.trim().toUpperCase();
 
-        Optional<Coupon> opt = couponRepository.findByCodeIgnoreCaseAndActiveTrue(normalized);
-        if (opt.isPresent()) {
-            Coupon c = opt.get();
-            if (c.getMinOrderAmount() != null && subtotal.compareTo(c.getMinOrderAmount()) < 0) {
-                return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
+        if (couponRepository != null) {
+            Optional<Coupon> opt = couponRepository.findByCodeIgnoreCaseAndActiveTrue(normalized);
+            if (opt.isPresent()) {
+                Coupon c = opt.get();
+                if (c.getMinOrderAmount() != null && subtotal.compareTo(c.getMinOrderAmount()) < 0) {
+                    return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
+                }
+                BigDecimal discount = subtotal.multiply(c.getDiscountPercentage().divide(new BigDecimal("100"), 4, RoundingMode.HALF_UP));
+                if (c.getMaxDiscountAmount() != null && discount.compareTo(c.getMaxDiscountAmount()) > 0) {
+                    discount = c.getMaxDiscountAmount();
+                }
+                return discount.setScale(2, RoundingMode.HALF_UP);
             }
-            BigDecimal discount = subtotal.multiply(c.getDiscountPercentage().divide(new BigDecimal("100"), 4, RoundingMode.HALF_UP));
-            if (c.getMaxDiscountAmount() != null && discount.compareTo(c.getMaxDiscountAmount()) > 0) {
-                discount = c.getMaxDiscountAmount();
-            }
-            return discount.setScale(2, RoundingMode.HALF_UP);
         }
 
         // Built-in promotional fallbacks

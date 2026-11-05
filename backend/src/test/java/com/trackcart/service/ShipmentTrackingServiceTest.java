@@ -43,7 +43,8 @@ class ShipmentTrackingServiceTest {
                 notificationRepository,
                 auditLogRepository,
                 authService,
-                emailService
+                emailService,
+                smsWebhookService
         );
     }
 
