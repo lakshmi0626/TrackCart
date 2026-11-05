@@ -10,8 +10,10 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -61,5 +63,18 @@ public class OrderController {
         headers.setContentType(MediaType.TEXT_HTML);
         headers.add("Content-Disposition", "inline; filename=\"invoice-order-" + id + ".html\"");
         return ResponseEntity.ok().headers(headers).body(html);
+    }
+
+    @PostMapping("/{id}/rate")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @Operation(summary = "Submit a rating for the assigned delivery courier (1-5 stars)")
+    public ResponseEntity<Map<String, Object>> rateDelivery(@PathVariable Long id, @RequestBody Map<String, Integer> payload) {
+        int stars = payload.getOrDefault("rating", 5);
+        Double newRating = orderService.rateDeliveryPartner(id, Math.max(1, Math.min(5, stars)));
+        Map<String, Object> res = new HashMap<>();
+        res.put("success", true);
+        res.put("newDriverRating", newRating);
+        res.put("message", "Thank you for rating your delivery partner!");
+        return ResponseEntity.ok(res);
     }
 }
