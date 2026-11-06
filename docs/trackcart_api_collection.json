@@ -1,0 +1,29 @@
+{
+  "info": {
+    "name": "TrackCart REST API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8080/api/health"
+      }
+    },
+    {
+      "name": "Auth Login",
+      "request": {
+        "method": "POST",
+        "url": "http://localhost:8080/api/auth/login"
+      }
+    },
+    {
+      "name": "Track Shipment",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8080/api/shipments/track/TRK-TC-DEMO01"
+      }
+    }
+  ]
+}
