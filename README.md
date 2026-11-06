@@ -1,6 +1,8 @@
 # TrackCart – Intelligent Order & Delivery Tracking Platform
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
+[![Java](https://img.shields.io/badge/Java-21%20LTS-ED8B00.svg)]()
+[![Docker](https://img.shields.io/badge/Docker-Compose%20v2-2496ED.svg)]()
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.4-brightgreen.svg)]()
 [![React](https://img.shields.io/badge/React-18.3.1-blue.svg)]()
 [![Vite](https://img.shields.io/badge/Vite-5.4.7-646CFF.svg)]()
