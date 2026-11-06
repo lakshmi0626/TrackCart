@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import StatusBadge from '../../components/common/StatusBadge';
 import { Link } from 'react-router-dom';
 import { api } from '../../services/api';
 import { 
@@ -130,15 +131,7 @@ export default function CustomerOrdersPage() {
                   <div className="space-y-1">
                     <div className="flex items-center gap-2.5">
                       <span className="font-mono font-bold text-sm text-slate-900">{order.orderNumber}</span>
-                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
-                        order.status === 'DELIVERED'
-                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                          : order.status === 'CANCELLED'
-                          ? 'bg-rose-50 text-rose-700 border-rose-200'
-                          : 'bg-amber-50 text-amber-700 border-amber-200'
-                      }`}>
-                        {order.status}
-                      </span>
+                      <StatusBadge status={order.status} />
                     </div>
                     <p className="text-xs text-slate-500">
                       Placed on {new Date(order.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })} • Destination: <span className="font-medium text-slate-700">{order.city}, {order.state}</span>

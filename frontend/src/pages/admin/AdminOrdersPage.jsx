@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import StatusBadge from '../../components/common/StatusBadge';
 import { Link } from 'react-router-dom';
 import { api } from '../../services/api';
 import { 
@@ -148,15 +149,7 @@ export default function AdminOrdersPage() {
                       {order.city}, {order.state}
                     </td>
                     <td className="py-3 px-4">
-                      <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold border ${
-                        order.status === 'DELIVERED'
-                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                          : order.status === 'CANCELLED'
-                          ? 'bg-rose-50 text-rose-700 border-rose-200'
-                          : 'bg-amber-50 text-amber-700 border-amber-200'
-                      }`}>
-                        {order.status}
-                      </span>
+                      <StatusBadge status={order.status} />
                     </td>
                     <td className="py-3 px-4 text-slate-700">
                       {order.assignedPartnerName ? (
