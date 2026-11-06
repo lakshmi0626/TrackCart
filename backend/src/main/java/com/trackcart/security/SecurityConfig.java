@@ -25,6 +25,10 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    public static final int SECURITY_HEADERS_FILTER_ORDER = 0;
+    public static final int RATE_LIMIT_FILTER_ORDER = 1;
+
+
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final RateLimitFilter rateLimitFilter;
 
