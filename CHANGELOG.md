@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.0] - 2026-11-06
+
+### Added (35 Enterprise Pull Requests Completed)
+- **PR #31**: CI/CD GitHub Actions setup-node caching resolution (`frontend/package-lock.json`), build step sequencing, and async test runner hardening.
+- **PR #32**: Application-wide dark mode theme state management (`ThemeContext`), local storage persistence, and header toggle switch.
+- **PR #33**: Reusable `StatusBadge` component featuring animated pulsing status indicators and accessible styling across Customer and Admin order tables.
+- **PR #34**: Enterprise OWASP security headers filter (`SecurityHeadersFilter`) protecting against MIME-sniffing and clickjacking, with full automated test suite (`SecurityHeadersFilterTest`).
+- **PR #35**: Advanced telemetry metrics in `HealthCheckController` (`/api/health/ping`, JVM heap utilization, active threads) and v1.2.0 production release documentation.
+
+---
+
 ## [1.1.0] - 2026-11-05
 
 ### Added (30 Enterprise Pull Requests Completed)
