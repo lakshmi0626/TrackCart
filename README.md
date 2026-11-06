@@ -125,3 +125,5 @@ docker compose up --build
 - [Testing & Quality Assurance Guide](TESTING_GUIDE.md)
 - [Contributing Guidelines](CONTRIBUTING.md)
 - [Changelog](CHANGELOG.md)
+
+<!-- pr-22-meta -->
