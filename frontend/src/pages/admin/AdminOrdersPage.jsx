@@ -62,8 +62,9 @@ export default function AdminOrdersPage() {
 
   const filteredOrders = orders.filter((o) => {
     const matchesFilter = filter === 'ALL' || o.status === filter;
-    const matchesSearch = !search || 
-      o.orderNumber.toLowerCase().includes(search.toLowerCase()) ||
+    const trimmedSearch = search.trim().toLowerCase();
+    const matchesSearch = !trimmedSearch || 
+      o.orderNumber.toLowerCase().includes(trimmedSearch) ||
       (o.customerName && o.customerName.toLowerCase().includes(search.toLowerCase())) ||
       (o.trackingNumber && o.trackingNumber.toLowerCase().includes(search.toLowerCase()));
     return matchesFilter && matchesSearch;
