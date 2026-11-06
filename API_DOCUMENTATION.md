@@ -1,110 +1,105 @@
-# TrackCart – REST API Specification
+# TrackCart Enterprise REST API Specification
 
-Interactive Swagger UI is available at: `http://localhost:8080/swagger-ui.html`
-OpenAPI JSON format: `http://localhost:8080/api-docs`
+Comprehensive interface documentation for the **TrackCart** logistics, shipment tracking, and order fulfillment platform.
 
-Base URL: `/api`
-
-All authenticated endpoints require the header:
-```http
-Authorization: Bearer <your-jwt-token>
-```
+**Base URL**: `http://localhost:8080/api`  
+**Swagger UI**: `http://localhost:8080/swagger-ui.html`  
+**OpenAPI JSON**: `http://localhost:8080/api-docs`  
+**Version**: `1.2.0`
 
 ---
 
-## 1. Authentication Endpoints
+## Security Response Headers (v1.2.0)
+All API endpoints enforce OWASP-compliant security response headers via `SecurityHeadersFilter`:
+- `X-Content-Type-Options`: `nosniff`
+- `X-Frame-Options`: `SAMEORIGIN`
+- `X-XSS-Protection`: `1; mode=block`
+- `Referrer-Policy`: `strict-origin-when-cross-origin`
+- `Permissions-Policy`: `camera=(), microphone=(), geolocation=(self)`
+
+---
+
+## 1. Authentication & Security
 
 ### `POST /api/auth/register`
-Creates a new customer or delivery partner account.
+Creates a new customer or partner driver account.
 - **Request Body**:
   ```json
   {
-    "email": "sarah@example.com",
+    "fullName": "Sarah Connor",
+    "email": "sarah@cyberdyne.io",
     "password": "Password@123",
-    "fullName": "Sarah Jenkins",
-    "phone": "+1-555-0188",
-    "role": "CUSTOMER",
-    "shippingAddress": "188 Orchard Avenue",
-    "city": "Seattle",
-    "state": "WA",
-    "postalCode": "98101"
-  }
-  ```
-- **Response (200 OK)**:
-  ```json
-  {
-    "token": "eyJhbGciOiJIUzI1NiJ9...",
-    "tokenType": "Bearer",
-    "id": 2,
-    "email": "sarah@example.com",
-    "fullName": "Sarah Jenkins",
+    "phoneNumber": "+1-415-555-0199",
     "role": "CUSTOMER"
   }
   ```
+- **Response `(200 OK)`**: Returns JWT session token and user profile summary.
 
 ### `POST /api/auth/login`
-Authenticates user and returns JWT token.
+Authenticates credentials and generates a signed JWT token (24-hour expiration).
 - **Request Body**:
   ```json
   {
     "email": "customer@trackcart.io",
-    "password": "Customer@123"
+    "password": "Password@123"
   }
   ```
-- **Response (200 OK)**: Returns AuthResponse with Bearer token.
-
-### `GET /api/auth/me`
-Retrieves currently authenticated user profile.
+- **Response `(200 OK)`**:
+  ```json
+  {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "userId": 2,
+    "email": "customer@trackcart.io",
+    "fullName": "John Customer",
+    "phoneNumber": "+1-555-0102",
+    "role": "CUSTOMER"
+  }
+  ```
 
 ---
 
 ## 2. Order Management
 
-### `POST /api/orders`
-Creates a new multi-item order, generates shipment, logs initial tracking milestone, and creates tax invoice.
+### `POST /api/orders` *(Customer Only)*
+Creates a new purchase order with multiple items, subtotal calculation, 18% tax, and shipping fees.
 - **Request Body**:
   ```json
   {
+    "shippingAddress": "742 Evergreen Terrace",
+    "city": "Springfield",
+    "state": "OR",
+    "postalCode": "97477",
     "items": [
-      {
-        "productName": "Sony WH-1000XM5 Wireless Headphones",
-        "sku": "SNY-WH-XM5",
-        "unitPrice": 349.99,
-        "quantity": 1
-      }
-    ],
-    "shippingAddress": "42 Tech Blvd",
-    "city": "San Francisco",
-    "state": "CA",
-    "postalCode": "94105",
-    "deliveryNotes": "Leave at front desk",
-    "paymentMethod": "CREDIT_CARD"
+      { "productName": "Ergonomic Mechanical Keyboard", "quantity": 1, "unitPrice": 129.99 },
+      { "productName": "Wireless Precision Mouse", "quantity": 2, "unitPrice": 49.50 }
+    ]
   }
   ```
-- **Response (200 OK)**: Returns `OrderResponse` including `orderNumber`, `trackingNumber`, and calculated totals.
+- **Behavior**:
+  - Automatically initializes tracking number format: `TRK-TC-YYYYMMDD-XXXX`.
+  - Automatically manifests initial order event (`ORDER PLACED`).
 
 ### `GET /api/orders`
-Returns list of orders based on authenticated role:
-- `ADMIN`: all system orders.
-- `CUSTOMER`: orders placed by authenticated user.
-- `DELIVERY_PARTNER`: shipments assigned to driver.
+Retrieves all orders matching current user authorization:
+- `CUSTOMER`: Views own order catalog.
+- `ADMIN`: Views global order roster.
 
 ### `GET /api/orders/{id}`
-Returns details for a single order.
+Retrieves single order with line-items, financial totals, and associated shipment details.
 
-### `PUT /api/orders/{id}/cancel`
-Cancels an order if eligible (before it has shipped), issues refund, and marks shipment `FAILED/CANCELLED`.
+### `POST /api/orders/{id}/cancel` *(Customer Only)*
+Cancels an unfulfilled order prior to dispatch (`CONFIRMED` or `PENDING` states). Dispatches customer alert and generates an audit log entry.
 
 ### `GET /api/orders/{id}/invoice`
-Returns a formatted, printable HTML/PDF tax invoice document.
+Generates and serves a formatted, printable official tax invoice with company tax IDs and digital signature stamp.
 
 ---
 
-## 3. Intelligent Shipment & Tracking
+## 3. Shipment Milestones & Real-Time Tracking
 
-### `GET /api/shipments/track/{trackingNumber}` (Public)
-Publicly accessible lookup for intelligent tracking timeline by tracking number (e.g. `TRK-TC-DEMO01`) or order reference (`TC-ORD-2026-8812`).
-- **Response (200 OK)**:
+### `GET /api/shipments/track/{trackingNumber}` *(Public)*
+Returns public live tracking milestones, transit timeline, and driver details for customer parcel lookups.
+- **Response `(200 OK)`**:
   ```json
   {
     "id": 1,
@@ -158,30 +153,21 @@ Assigns a delivery partner to an unassigned shipment.
 ### `GET /api/delivery-partners/me`
 Retrieves authenticated partner driver profile, vehicle specs, and rating.
 
-### `GET /api/delivery-partners/my-assignments`
-Returns active and historical delivery shipments assigned to this courier.
+### `PUT /api/delivery-partners/status`
+Toggles partner availability (`AVAILABLE` vs `OFFLINE`).
 
-### `PUT /api/delivery-partners/availability`
-Toggles online availability state (`{"isAvailable": true}`).
+### `GET /api/delivery-partners/my-deliveries`
+Returns active shipments assigned to the logged-in courier.
 
-### `PUT /api/delivery-partners/location`
-Pushes live GPS coordinates (`{"lat": 37.7749, "lng": -122.4194}`).
+### `GET /api/delivery-partners/my-history`
+Returns completed shipments, timestamps, and accrued courier fees.
 
 ---
 
-## 5. Support & Complaints
+## 5. Support & Ticket Triage
 
-### `POST /api/complaints`
-Logs a new customer support ticket.
-- **Request Body**:
-  ```json
-  {
-    "orderId": 5,
-    "subject": "Delivery past scheduled window",
-    "description": "Package delayed by over 24 hours.",
-    "priority": "HIGH"
-  }
-  ```
+### `POST /api/complaints` *(Customer Only)*
+Submits an issue regarding an order, damaged item, or delivery delay.
 
 ### `GET /api/complaints`
 Returns tickets (customer sees own tickets, admin sees all).
@@ -205,13 +191,15 @@ Returns last 50 immutable system events with actors and timestamps.
 ### `POST /api/seed/reset`
 Restores the database with clean demonstration data across all three roles.
 
-
 ---
 
-## 7. Diagnostics, Coupons & Data Exports (v1.1.0)
+## 7. Diagnostics, Coupons & Data Exports (v1.2.0)
 
 ### `GET /api/health`
-Public liveness and diagnostics probe returning JVM memory, disk space, and database connection status.
+Public liveness and diagnostics probe returning JVM memory, active threads, disk space, and database connection status.
+
+### `GET /api/health/ping`
+Lightweight Kubernetes readiness/liveness ping endpoint returning service health status and timestamp.
 
 ### `POST /api/coupons/validate`
 Validates promotional discount codes (`WELCOME10`, `TRACK20`) against current cart subtotal.
