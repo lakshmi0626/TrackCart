@@ -133,3 +133,12 @@ docker compose up --build
 <!-- pr-27-meta -->
 
 <!-- pr-29-meta -->
+
+
+### 🚀 Quick Start with Docker
+```bash
+# Spin up PostgreSQL, Spring Boot backend, and React Vite frontend
+docker compose up --build
+```
+- Frontend portal: http://localhost:5173
+- Backend REST API & Swagger: http://localhost:8080/swagger-ui.html
