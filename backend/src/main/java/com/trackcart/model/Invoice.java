@@ -55,6 +55,10 @@ public class Invoice {
     public Order getOrder() { return order; }
     public void setOrder(Order order) { this.order = order; }
 
+    public String getFormattedInvoiceDate() {
+        return this.invoiceDate != null ? this.invoiceDate.toString().substring(0, 10) : "";
+    }
+
     public Instant getInvoiceDate() { return invoiceDate; }
     public void setInvoiceDate(Instant invoiceDate) { this.invoiceDate = invoiceDate; }
 
