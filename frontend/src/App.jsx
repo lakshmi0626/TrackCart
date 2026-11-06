@@ -33,6 +33,7 @@ import PartnerHistoryPage from './pages/partner/PartnerHistoryPage';
 // Common
 import TrackingPage from './pages/tracking/TrackingPage';
 import ProfilePage from './pages/ProfilePage';
+import NotFoundPage from './pages/NotFoundPage';
 
 function RootRedirect() {
   const { user, role, loading } = useAuth();
@@ -90,7 +91,7 @@ export default function App() {
                 <Route path="/partner/history" element={<ProtectedRoute allowedRoles={['DELIVERY_PARTNER']}><PartnerHistoryPage /></ProtectedRoute>} />
 
                 {/* Fallback */}
-                <Route path="*" element={<Navigate to="/" replace />} />
+                <Route path="*" element={<NotFoundPage />} />
               </Route>
             </Routes>
           </BrowserRouter>
