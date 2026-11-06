@@ -60,3 +60,14 @@ Every Pull Request must:
   - Do not use generic AI templates or excessive blue themes.
   - All buttons must perform real actions or trigger verified dialogs.
   - Keep styling consistent with Slate / Emerald accents.
+
+
+### Branch Naming Convention
+- `feature/<feature-name>` for new application capabilities
+- `fix/<bug-description>` for defect resolutions
+- `docs/<topic>` for architectural documentation updates
+
+### Verification Checklist
+1. Run `mvn test` in `backend/`
+2. Run `npm run build` and `node test-runner.js` in `frontend/`
+3. Ensure all automated GitHub Actions checks pass
