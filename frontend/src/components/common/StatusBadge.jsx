@@ -105,7 +105,7 @@ export default function StatusBadge({ status, showIcon = true, size = 'sm' }) {
   return (
     <span
       className={`inline-flex items-center font-bold rounded-full border ${bgColor} ${textColor} ${borderColor} ${sizeClasses}`}
-      aria-label={`Status: ${label}`}
+      role="status" aria-live="polite" title={`Current status: ${label}`} aria-label={`Status: ${label}`}
     >
       <span className="relative flex h-2 w-2">
         {pulsing && (
