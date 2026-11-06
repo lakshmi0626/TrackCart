@@ -163,3 +163,15 @@ Immutable compliance ledger.
 - `ip_address` (VARCHAR(50))
 - `details` (TEXT)
 - `timestamp` (TIMESTAMP WITH TIME ZONE)
+
+## Entity Relationship Diagram
+
+```mermaid
+erDiagram
+    USERS ||--o{ ORDERS : places
+    USERS ||--o{ COMPLAINTS : files
+    ORDERS ||--|| SHIPMENTS : tracks
+    ORDERS ||--o{ ORDER_ITEMS : contains
+    SHIPMENTS ||--o{ TRACKING_EVENTS : logs
+    DELIVERY_PARTNERS ||--o{ SHIPMENTS : delivers
+```
