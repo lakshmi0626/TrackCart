@@ -73,6 +73,10 @@ public class DeliveryPartner {
     public Boolean getIsAvailable() { return isAvailable; }
     public void setIsAvailable(Boolean isAvailable) { this.isAvailable = isAvailable; }
 
+    public String getFormattedRating() {
+        return String.format(java.util.Locale.US, "%.1f", this.rating != null ? this.rating : 5.0);
+    }
+
     public Double getRating() { return rating; }
     public void setRating(Double rating) { this.rating = rating; }
 
