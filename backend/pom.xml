@@ -23,6 +23,11 @@
         <jjwt.version>0.12.5</jjwt.version>
         <springdoc.version>2.6.0</springdoc.version>
     </properties>
+    <scm>
+        <url>https://github.com/lakshmi0626/TrackCart</url>
+        <connection>scm:git:git://github.com/lakshmi0626/TrackCart.git</connection>
+    </scm>
+
 
     <dependencies>
         <!-- Spring Boot Starters -->
