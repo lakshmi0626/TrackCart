@@ -11,6 +11,10 @@ public final class GeoUtils {
      * Calculates geodesic distance in kilometers between two lat/lon coordinates
      * using the Haversine formula.
      */
+    public static double calculateHaversineDistanceMiles(double lat1, double lon1, double lat2, double lon2) {
+        return calculateHaversineDistanceKm(lat1, lon1, lat2, lon2) * 0.621371;
+    }
+
     public static double calculateHaversineDistanceKm(double lat1, double lon1, double lat2, double lon2) {
         double dLat = Math.toRadians(lat2 - lat1);
         double dLon = Math.toRadians(lon2 - lon1);

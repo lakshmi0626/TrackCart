@@ -9,6 +9,13 @@ class GeoUtilsTest {
 
     @Test
     @DisplayName("Should accurately calculate distance between San Francisco and Oakland")
+    void testHaversineDistanceMiles() {
+        double miles = GeoUtils.calculateHaversineDistanceMiles(37.7749, -122.4194, 37.8044, -122.2712);
+        assertTrue(miles > 7.0 && miles < 10.0);
+    }
+
+    @Test
+    @DisplayName("Should accurately calculate distance between San Francisco and Oakland")
     void testHaversineDistance() {
         // San Francisco (37.7749, -122.4194) to Oakland (37.8044, -122.2712) ~ 13.5 km
         double distance = GeoUtils.calculateHaversineDistanceKm(37.7749, -122.4194, 37.8044, -122.2712);
