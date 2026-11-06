@@ -81,6 +81,7 @@ export default function AdminDashboard() {
             Admin Command Center
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
+            <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>Live telemetry active • 
             Real-time logistical velocity, delivery performance, and fleet dispatch orchestration.
           </p>
         </div>
