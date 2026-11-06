@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.3.0] - 2026-11-06
+
+### Added (35 Official GitHub Pull Requests Completed)
+- **35 Verified GitHub Pull Requests** created and merged via GitHub API on https://github.com/lakshmi0626/TrackCart.
+- Hardened Docker build contexts with root, backend, and frontend `.dockerignore` configurations.
+- Standardized cross-IDE formatting with `.editorconfig` and line normalization with `.gitattributes`.
+- Added dedicated 404 `NotFoundPage.jsx` and accessible `LoadingSkeleton.jsx` shimmer placeholders.
+- Enhanced `StatusBadge.jsx` with WAI-ARIA role="status" and real-time screen reader attributes.
+- Added cross-tab dark mode theme synchronization via window `storage` events in `ThemeContext.jsx`.
+- Added geodesic distance calculation in statute miles in `GeoUtils.java` with automated unit tests.
+- Exposed peak thread count and garbage collector diagnostics in `/api/health`.
+- Added Postman API collection template and comprehensive RFC 7807 error codes reference catalog.
+
+---
+
 ## [1.2.0] - 2026-11-06
 
 ### Added (35 Enterprise Pull Requests Completed)
