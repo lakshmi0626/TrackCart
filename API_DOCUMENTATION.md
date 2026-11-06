@@ -212,3 +212,16 @@ Streams all platform order records as a formatted CSV attachment.
 
 ### `GET /api/analytics/export/audit-logs/csv` *(Admin Only)*
 Streams immutable compliance audit event logs as a formatted CSV attachment.
+
+---
+
+## 8. Error Codes & Problem Details (RFC 7807)
+
+| HTTP Status | Error Code | Description |
+| :--- | :--- | :--- |
+| **400** | `VALIDATION_ERROR` | Malformed input or invalid payload constraints |
+| **401** | `UNAUTHORIZED` | Missing or expired JWT bearer token |
+| **403** | `FORBIDDEN` | Insufficient RBAC role privileges |
+| **404** | `RESOURCE_NOT_FOUND` | Requested order, tracking ID, or partner not found |
+| **429** | `RATE_LIMIT_EXCEEDED` | Client exceeded 120 requests/minute threshold |
+| **500** | `INTERNAL_SERVER_ERROR` | Unhandled server exception with UUID trace reference |
