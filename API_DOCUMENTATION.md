@@ -1,5 +1,8 @@
 # TrackCart Enterprise REST API Specification
 
+[![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0-6BA539.svg)](http://localhost:8080/swagger-ui.html)
+[![Swagger](https://img.shields.io/badge/Swagger-UI-85EA2D.svg)](http://localhost:8080/swagger-ui.html)
+
 Comprehensive interface documentation for the **TrackCart** logistics, shipment tracking, and order fulfillment platform.
 
 **Base URL**: `http://localhost:8080/api`  
