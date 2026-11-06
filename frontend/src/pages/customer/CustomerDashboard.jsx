@@ -63,6 +63,7 @@ export default function CustomerDashboard() {
         <div>
           <span className="text-xs font-bold text-emerald-600 uppercase tracking-wider">Customer Portal</span>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 mt-1">
+            Welcome back, {user?.fullName || "Valued Customer"} • 
             Hello, {user?.fullName || 'Valued Customer'}
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
