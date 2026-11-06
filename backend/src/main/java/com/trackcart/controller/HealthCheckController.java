@@ -23,12 +23,21 @@ public class HealthCheckController {
         this.dataSource = dataSource;
     }
 
+    @GetMapping("/ping")
+    public ResponseEntity<Map<String, String>> ping() {
+        Map<String, String> response = new HashMap<>();
+        response.put("status", "PONG");
+        response.put("service", "trackcart-backend");
+        response.put("timestamp", Instant.now().toString());
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping
     public ResponseEntity<Map<String, Object>> getHealth() {
         Map<String, Object> health = new HashMap<>();
         health.put("status", "UP");
         health.put("service", "trackcart-backend");
-        health.put("version", "1.0.0");
+        health.put("version", "1.2.0");
         health.put("timestamp", Instant.now().toString());
 
         long uptimeMs = ManagementFactory.getRuntimeMXBean().getUptime();
@@ -49,11 +58,19 @@ public class HealthCheckController {
 
         // JVM Memory status
         Runtime runtime = Runtime.getRuntime();
+        long totalMemory = runtime.totalMemory();
+        long freeMemory = runtime.freeMemory();
+        long usedMemory = totalMemory - freeMemory;
+        long maxMemory = runtime.maxMemory();
+
         Map<String, Object> memory = new HashMap<>();
-        memory.put("totalMemoryMb", runtime.totalMemory() / (1024 * 1024));
-        memory.put("freeMemoryMb", runtime.freeMemory() / (1024 * 1024));
-        memory.put("maxMemoryMb", runtime.maxMemory() / (1024 * 1024));
+        memory.put("totalMemoryMb", totalMemory / (1024 * 1024));
+        memory.put("freeMemoryMb", freeMemory / (1024 * 1024));
+        memory.put("usedMemoryMb", usedMemory / (1024 * 1024));
+        memory.put("maxMemoryMb", maxMemory / (1024 * 1024));
+        memory.put("memoryUtilizationPercent", (double) Math.round(((double) usedMemory / totalMemory) * 10000) / 100);
         memory.put("availableProcessors", runtime.availableProcessors());
+        memory.put("liveThreadCount", ManagementFactory.getThreadMXBean().getThreadCount());
         health.put("jvm", memory);
 
         // Disk space
