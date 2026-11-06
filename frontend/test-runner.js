@@ -22,6 +22,7 @@ async function test(name, fn) {
 }
 
 async function run() {
+  const startTime = Date.now();
   // Test 1: Production bundle exists
   await test('Production dist/index.html was built', () => {
     assert.ok(fs.existsSync('dist/index.html'), 'dist/index.html missing');
@@ -82,7 +83,7 @@ async function run() {
     }
   });
 
-  console.log(`\nResults: ${passed}/${total} test assertions passed.\n`);
+  console.log(`\nResults: ${passed}/${total} test assertions passed (completed in ${Date.now() - startTime}ms).\n`);
   if (passed !== total) process.exit(1);
 }
 
