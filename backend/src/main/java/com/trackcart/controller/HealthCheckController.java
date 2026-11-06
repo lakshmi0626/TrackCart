@@ -71,6 +71,7 @@ public class HealthCheckController {
         memory.put("memoryUtilizationPercent", (double) Math.round(((double) usedMemory / totalMemory) * 10000) / 100);
         memory.put("availableProcessors", runtime.availableProcessors());
         memory.put("liveThreadCount", ManagementFactory.getThreadMXBean().getThreadCount());
+        memory.put("peakThreadCount", ManagementFactory.getThreadMXBean().getPeakThreadCount());
         health.put("jvm", memory);
 
         // Disk space
